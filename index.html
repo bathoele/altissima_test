@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Altissima Studios — Theatre by Artists</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --purple-900:#2b0040;
+      --purple-700:#6b1fbf;
+      --accent:#a64dff;
+      --white:#fff;
+      --text:#1a0026;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;color:var(--text);background:var(--white)}
+
+    /* subtle flowing geometric SVG as background (data URI) */
+    body::before{
+      content:'';position:fixed;inset:0;z-index:-1;opacity:1;
+      background-color:#fdf7ff;
+      background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='30%25' r='80%25'%3E%3Cstop offset='0%25' stop-color='%23f8f0ff'/%3E%3Cstop offset='100%25' stop-color='%23f0e7ff'/%3E%3C/radialGradient%3E%3ClinearGradient id='p' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236b1fbf' stop-opacity='0.08'/%3E%3Cstop offset='60%25' stop-color='%23a64dff' stop-opacity='0.06'/%3E%3Cstop offset='100%25' stop-color='%23ffffff' stop-opacity='0.02'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg%3E%3Cpath d='M0 200 C300 80 500 340 900 180 C1200 80 1400 260 1600 200 L1600 0 L0 0 Z' fill='url(%23p)'/%3E%3Cpath d='M0 600 C220 520 480 720 900 620 C1260 540 1500 700 1600 660 L1600 900 L0 900 Z' fill='url(%23p)'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:center top;background-size:cover;pointer-events:none;mix-blend-mode:normal;filter:blur(0px) saturate(1);
+    }
+
+    /* Top bar */
+    header{position:sticky;top:0;z-index:60;background:var(--purple-900);color:var(--white);display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:3px solid var(--purple-700)}
+    header .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:48px;height:48px;border-radius:6px;background:linear-gradient(180deg,var(--accent),#7a27d6);display:grid;place-items:center;font-weight:800;color:#fff}
+    header nav a{color:var(--white);text-decoration:none;margin-left:18px;font-weight:600}
+
+    main{max-width:1200px;margin:32px auto;padding:0 20px}
+
+    /* HERO with embedded image and parallax */
+    .hero{position:relative;height:78vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    /* use absolute path to the uploaded file inside the environment; change to relative if you host elsewhere */
+    .hero .hero-img{position:absolute;inset:0;width:110%;height:120%;object-fit:cover;transform:translateY(0) scale(1.03);transition:transform 0.3s ease;filter:contrast(1.02) saturate(0.95)}
+    .hero .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,0,64,0.56) 10%, rgba(255,255,255,0.02) 60%);mix-blend-mode:multiply}
+
+    /* Hero card - sharp corners, slight hover zoom */
+    .hero-card{position:relative;z-index:3;background:var(--white);color:var(--purple-900);padding:26px 34px;border-radius:6px;max-width:760px;border:2px solid rgba(107,31,191,0.12);box-shadow:0 20px 60px rgba(107,31,191,0.06);transition:transform 220ms ease, box-shadow 220ms ease}
+    .hero-card:hover{transform:scale(1.02);box-shadow:0 28px 80px rgba(107,31,191,0.12)}
+    .hero-card h1{font-size:34px;margin-bottom:8px;letter-spacing:-0.02em}
+    .hero-card p{margin:0;color:#4a007a}
+
+    /* Sections alternate right/left layout, less blocky, sharper lines */
+    .section{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;margin:48px 0;padding:28px;border-radius:6px}
+    .section .text{padding:0}
+    .section .card{background:var(--white);border-radius:4px;padding:22px;border-left:6px solid var(--purple-700);box-shadow:0 10px 30px rgba(0,0,0,0.04);transition:transform 220ms ease, box-shadow 220ms ease}
+    .section .card:hover{transform:scale(1.03);box-shadow:0 26px 60px rgba(107,31,191,0.08)}
+    .section .media{display:grid;place-items:center}
+    .section img{width:100%;border-radius:4px;display:block;border:1px solid rgba(0,0,0,0.06)}
+
+    /* alternate layout for even sections (heading alignment flips) */
+    .section.alt{grid-template-columns:1fr 1fr}
+    .section.alt .text{order:2;text-align:left}
+    .section.alt .media{order:1}
+    .section:nth-of-type(odd) .card h2{ text-align:right }
+    .section:nth-of-type(even) .card h2{ text-align:left }
+
+    /* headings and lines */
+    h2.section-title{font-size:20px;margin-bottom:12px;color:var(--purple-700);font-weight:800}
+    .lead{font-size:15px;line-height:1.7;color:#2a0033}
+
+    /* responsive, stack and alternate flow on small screens */
+    @media(max-width:900px){
+      .section{grid-template-columns:1fr;}
+      .section.alt .text{order:2}
+      .hero{height:64vh}
+      .hero .hero-img{height:140%;}
+      header{padding:14px}
+      .hero-card{padding:18px}
+    }
+
+    /* subtle animations */
+    .reveal{opacity:0;transform:translateY(18px);transition:all 700ms cubic-bezier(.2,.9,.2,1)}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* footer social icons layout */
+    .social{display:flex;gap:14px;justify-content:center;margin-top:12px}
+    .social a{display:inline-grid;place-items:center;width:40px;height:40px;background:var(--white);border-radius:6px}
+    .social svg{width:20px;height:20px;fill:var(--purple-900)}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><div class="logo">AS</div><div><div style="font-weight:800">Altissima Studios</div><div style="font-size:12px;opacity:0.85">Theatre by Artists</div></div></div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#show">Our Show</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- HERO: embedded image. IMPORTANT: ensure the file path below matches where you host the image. -->
+    <section class="hero" id="home">
+      <!-- Use the uploaded image from the environment. If you download this file to host, place PB_singscol-27.jpeg next to the HTML or replace the path with your hosted URL. -->
+      <img class="hero-img" src="/ASSETS/PB_singscol-27.jpeg" alt="Paula and André performing" />
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="hero-card">
+        <h1>Authentic theatre. Artist-run. Student-led.</h1>
+        <p class="lead">Founded by college artists, Altissima Studios is a theatre startup created to build opportunities where performers can create honestly. Our debut: <strong>The Last Five Years</strong> (Jason Robert Brown) — mid‑April 2026.</p>
+      </div>
+    </section>
+
+    <!-- ABOUT: left text, right media -->
+    <section class="section" id="about">
+      <div class="text reveal"><div class="card"><h2 class="section-title">Who we are</h2><p class="lead">We’re students, artists, and producers who wanted a more direct path from rehearsal room to stage. Altissima Studios focuses on intimate, musician-forward productions and meaningful collaboration between performers and creative teams.</p></div></div>
+      <div class="media reveal"><img src="/ASSETS/PB_singscol-20.JPG" alt="Paula with violin" /></div>
+    </section>
+
+    <!-- SHOW: alternate layout (media left, text right) -->
+    <section class="section alt" id="show">
+      <div class="media reveal"><img src="/ASSETS/PB_singscol-19.JPG" alt="André at piano" /></div>
+      <div class="text reveal"><div class="card"><h2 class="section-title">Our first production</h2><p class="lead">We present <strong>The Last Five Years</strong> by Jason Robert Brown — an intimate two-person musical exploring love across time. Performances scheduled for mid‑April 2026. Sign up for updates and auditions.</p></div></div>
+    </section>
+
+    <!-- CONTACT: centered card -->
+    <section class="section" id="contact" style="grid-template-columns:1fr;">
+      <div class="text reveal" style="margin:auto;max-width:760px"><div class="card"><h2 class="section-title">Get involved</h2><p class="lead">We’re recruiting performers, collaborators, and volunteers. If you’re a musician, actor, or stagehand who wants to create meaningful work, reach out — we’d love to meet you.</p>
+          <p style="margin-top:12px;font-weight:700;color:var(--purple-700)">Email: <a href="mailto:paulabsings@gmail.com">paulabsings@gmail.com</a></p>
+      </div></div>
+    </section>
+
+  </main>
+
+  <footer style="text-align:center;padding:28px;background:linear-gradient(90deg,var(--purple-900),var(--purple-700));color:var(--white);margin-top:36px;">
+    <div>© 2025 Altissima Studios</div>
+    <div class="social" aria-hidden="false">
+      <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <!-- Instagram SVG -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 6.5A4.5 4.5 0 1 0 16.5 13 4.5 4.5 0 0 0 12 8.5zm6.8-3.6a1.08 1.08 0 1 0 1.08 1.08 1.08 1.08 0 0 0-1.08-1.08z"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+        <!-- TikTok simple SVG -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v12.1A4.9 4.9 0 1 1 9 9.6V2h3z"/></svg>
+      </a>
+      <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+        <!-- YouTube SVG -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23 7s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16.5 3 12 3 12 3s-4.5 0-7.9.7c-.4.1-1.3.1-2.1 1C1.2 5.4 1 7 1 7S1 9 1 11v2c0 2 .2 4 1 4s.2 1.6.8 2.3c.8.9 1.8.9 2.3 1 1.7.3 7 .7 7 .7s4.5 0 7.9-.7c.4-.1 1.3-.1 2.1-1 .6-.7.8-2.3.8-2.3s.2-2 .2-4v-2c0-2-.2-4-.2-4zM9.8 15.6V8.4L15.6 12l-5.8 3.6z"/></svg>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    // Parallax: move hero image slightly as the page scrolls for depth
+    const heroImg = document.querySelector('.hero-img');
+    window.addEventListener('scroll', () => {
+      if(!heroImg) return;
+      const scrolled = window.scrollY;
+      const rate = Math.min(scrolled / 6, 120);
+      heroImg.style.transform = `translateY(${rate}px) scale(1.06)`;
+    });
+
+    // Reveal on scroll for text blocks, with alternating direction
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry,i) => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          // slight stagger
+          entry.target.style.transitionDelay = (i * 80) + 'ms';
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.18});
+    reveals.forEach(r => io.observe(r));
+
+    // Accessibility note: ensure image file is present
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const img = document.querySelector('.hero-img');
+      if(img && !img.complete){
+        img.addEventListener('error', ()=>{
+          console.warn('Hero image failed to load. Make sure PB_singscol-27.jpeg is in the same folder as this HTML file and named exactly as referenced.');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
